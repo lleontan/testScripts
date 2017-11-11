@@ -3,11 +3,12 @@
 /[Oo]bj/
 /[Bb]uild/
 /[Bb]uilds/
-/Assets/AssetStoreTools*
-/Assets/GameObjects*
-/Assets/Resources*
-/Assets/StandardAssets*
-/Assets/SteamVR*
+/Assets/
+/Assets/AssetStoreTools*/
+/Assets/GameObjects*/
+/Assets/Resources*/
+/Assets/StandardAssets*/
+/Assets/SteamVR*/
 
 *.blend
 *.blend1
