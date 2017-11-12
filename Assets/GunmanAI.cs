@@ -113,41 +113,11 @@ public class GunmanAI : MobHandler
 				}
 			}
 		} else {
-			animator.SetBool ("IsShooting", false);
+			//animator.SetBool ("IsShooting", false);
 
 		}
 	}
 	//a callback for calculating IK
-	/*void LateUpdate ()
-	{
-		//if the IK is active, set the position and rotation directly to the goal. 
-		if (ikActive) {
-
-			// Set the look target position, if one has been assigned
-			if (this.lookTarget != null) {
-				animator.SetLookAtWeight (1);
-				animator.SetLookAtPosition (this.lookTargetHead.position);
-
-			}    
-
-			// Set the right hand target position and rotation, if one has been assigned
-			if (hand != null && lookTargetHead != null) {
-				Debug.Log ("Look Target Head "+lookTargetHead.name);
-				animator.SetIKPositionWeight (AvatarIKGoal.LeftHand, 1);
-				animator.SetIKRotationWeight (AvatarIKGoal.LeftHand, 1);  
-				animator.SetIKPosition (AvatarIKGoal.LeftHand, lookTargetHead.position);
-				animator.SetIKRotation (AvatarIKGoal.LeftHand, lookTargetHead.rotation);
-			}        
-
-		} else {    
-			//if the IK is not active, set the position and rotation of the hand 
-			//and head back to the original position
-
-			animator.SetIKPositionWeight (AvatarIKGoal.LeftHand, 0);
-			animator.SetIKRotationWeight (AvatarIKGoal.LeftHand, 0); 
-			animator.SetLookAtWeight (0);
-		}
-	}*/
 	void OnAnimatorIK(int layer)
 	{
 		//if the IK is active, set the position and rotation directly to the goal. 

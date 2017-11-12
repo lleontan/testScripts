@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(ObjectHandle))]
 public class GunGripHandler : HandleEvents {
+	//Attach to the objectHandle of the gun.
 	/* Fires guns on triggerClick, Releases mag on menuButton press,*/
 	public Gun gun;					//Controller of the gun itself
 	public override void onPickup(Hand controller){
@@ -17,8 +19,7 @@ public class GunGripHandler : HandleEvents {
 	}
 	public override void onTriggerClickDown (Controller controller){
 		bool success=gun.AttemptFire ();
-		Debug.Log ("AttemptFire attempt "+success);
-
+		//Debug.Log ("AttemptFire attempt "+success);
 	}
 	public override bool onGripUp(Controller controller){		//WARNING RETURN TRUE;
 		return true;

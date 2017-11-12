@@ -75,7 +75,7 @@ public class ObjectHandle : MonoBehaviour {
 		this.holdable = newHoldable;
 		this.parentTrans = holdable.transform;
 	}
-	void Start(){
+	void Awake(){
 		if (handleEvents == null) {
 			this.handleEvents = this.GetComponent<HandleEvents> ();
 		}
@@ -102,7 +102,8 @@ public class ObjectHandle : MonoBehaviour {
 
 			//Working
 			//holdable.assignLayer (LayerMask.NameToLayer ("ignorePlayer"));
-				this.gameObject.layer = onHoldLayerInt;
+				//this.gameObject.layer = onHoldLayerInt;						//WARNING ONHOLDLAYER INT IS TOTALLY BROKEN AT THE MOMENT. DEFAULTS TO ZERO
+				this.gameObject.layer=0;
 				if (this.handleEvents) {
 					this.handleEvents.onPickup (this.handController);
 				}
@@ -127,11 +128,17 @@ public class ObjectHandle : MonoBehaviour {
 		//Physics.IgnoreCollision (
 		//	this.GetComponent<Collider> (), hand.root.GetComponent<Collider> (),false);
 		//Physics.IgnoreCollision(this.GetComponent<Collider>(),hand.GetComponent<Collider>(),false);
+
 		bool wasHeld=handController!=null;
 		if (wasHeld) {
 			//this.handController.setCanAutoPickup(false);
 			//this.handController.releaseGrasp ();
 			this.holdable.objectHandleRelease (this, canDepool);
+		}
+		if(this.handController){
+			this.handController.releaseGrasp();
+			this.hand = null;
+			this.handController = null;
 		}
 		//this.releaseHold ();
 		HoldableReleaseHold (wasHeld);				//To clear off the references on the old handle

@@ -41,7 +41,7 @@ public class Attachment : MonoBehaviour {
 	void OnTriggerEnter(Collider col){
 		AttachmentSlot slot=col.GetComponent<AttachmentSlot>();
 		if (slot) {
-			if (thisHoldable && !thisHoldable.isHeld () || thisHoldable == null) {
+			if (thisHoldable && (thisHoldable.isHeld() &&slot.getCanAttachWhileHeld()||!thisHoldable.isHeld()) || thisHoldable == null) {
 				this.AttemptAttach (slot);
 			}
 		}

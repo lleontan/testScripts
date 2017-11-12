@@ -47,7 +47,7 @@ public class CollisionDamage : MonoBehaviour {
 		if (thisCollider) {
 			colliders.Push (thisCollider);
 		}
-		foreach (Transform child in this.transform) {
+		foreach (Transform child in target.transform) {
 			colliders=setDamagingCollidersTraversal(child,colliders);
 		}
 		return colliders;

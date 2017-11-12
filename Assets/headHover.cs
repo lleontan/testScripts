@@ -9,6 +9,7 @@ public class headHover : MonoBehaviour {
 	//WARNING: ATTACH TO "Camera(Eye)" not Camera(Head)
 
 	//DEPRECIATED DO NOT USE, BAD BEHAVIOURS ABOUND IN THIS SCRIPT.
+	// Use cameraRigHoverInstead
 
 	// Use this for initialization
 	protected Rigidbody rootRigid;

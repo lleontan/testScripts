@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class leftController : Controller {
 	//Requires baseParent of rig to have mob.
+	//Merge with rightcontroller later since they do the same thing now.
 
 	protected override void Start () {
 		base.Start();

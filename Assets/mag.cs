@@ -1,5 +1,7 @@
 ﻿using System;
 
+//WARNING: CANNOT USE NULL CHECKS WITH REGULAR CLASSES.
+// Handles round information for a mag.
 [System.Serializable]
 public class mag
 {
@@ -23,7 +25,6 @@ public class mag
 	public bool chamberRound ()
 	{
 		//true for chambered round false for no rounds to chamber;
-
 		if (this.rounds > 0) {
 			this.rounds--;
 			return true;

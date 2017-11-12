@@ -24,6 +24,10 @@ public class AttachmentSlot : MonoBehaviour {
 	public bool acceptAll = false;
 	public string[] acceptAllExceptions;
 	private int[] acceptAllExceptionsInt;
+	public bool canAttachWhenHeld=true;
+	public bool getCanAttachWhileHeld(){
+		return this.canAttachWhenHeld;
+	}
 	void Awake(){
 		if(attachmentParentTransform==null){
 			this.attachmentParentTransform = this.transform;

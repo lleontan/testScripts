@@ -12,6 +12,7 @@ public class Magazine : OnAttach {
 	public int maxRounds = 30;
 	public int rounds = 30;
 	public GameObject[] showRounds;		//Round that is shown in mag
+	public bool onlyFirstRoundShow=false;					//Only show the first round in show rounds?
 	public string onAcceptLayer="ignoreDefault";
 	private int onAcceptLayerInt;
 	private int defaultLayer;
@@ -29,13 +30,18 @@ public class Magazine : OnAttach {
 	public void checkBullets(){
 		//Deactivates rounds starting from bottom up
 		//The last round to be deactivated is in array index 0 of showRounds;
-		if (this.magazine.rounds < showRounds.Length) {
+		if (this.onlyFirstRoundShow) {
+			if (this.magazine.rounds < 1) {
+				showRounds [0].SetActive (false);
+			}
+		} else if (this.magazine.rounds < showRounds.Length) {
 			int rounds = this.magazine.rounds;
-			for(int a=showRounds.Length-1 ; a>=rounds; a--){
+			for (int a = showRounds.Length - 1; a >= rounds; a--) {
 				this.showRounds [a].SetActive (false);
 			}
 		}
 	}
+
 	void Update(){
 		if (acceptanceTimer > 0) {
 			acceptanceTimer -= Time.deltaTime;

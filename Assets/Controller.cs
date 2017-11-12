@@ -151,7 +151,7 @@ public class Controller : Hand {
 		if (obj) {
 			checkOnControllerTouch (obj, col);
 		}else {
-			obj = col.transform.parent.GetComponent<OnControllerTouch> ();
+			obj = col.GetComponentInParent<OnControllerTouch> ();
 			if (obj) {
 				checkOnControllerTouch (obj,col);
 			}
