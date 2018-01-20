@@ -27,6 +27,7 @@ public class Controller : Hand {
 	public menuHoldActive menuButtonActivationObj;
 	private ObjectHandle lastHeldHandle;
 	public menuButtonReleaseEquip updateLastHeld;
+	private Collider thisCollider;
 	public override bool getCanAutoPickup(){
 		return base.getCanAutoPickup () && heldObj == null;
 	}
@@ -34,7 +35,6 @@ public class Controller : Hand {
 		return base.isHeld () || heldObj != null;
 	}
 	public override void releaseGrasp(){
-		Debug.Log ("Release Grasp");
 		if (isHeld()) {
 			this.lastHeldHandle= this.pickup;
 			if (updateLastHeld) {
@@ -52,6 +52,7 @@ public class Controller : Hand {
 		//Only releases the held touchHold if it exists
 		//Does not affect objectHandles
 		if(heldObj){
+			//thisCollider.isTrigger = false;				//Temporarily removed triggers
 			heldObj.controllerRelease ();
 			this.heldTransform = null;
 			heldObj = null;
@@ -60,10 +61,11 @@ public class Controller : Hand {
 	public override void grabTouchHoldObj(touchHold newTouch){
 		this.heldObj = newTouch;
 		base.grabTouchHoldObj (newTouch);
+		//thisCollider.isTrigger = true;
+
 	}
 	public override void PickUpObjectHandle(ObjectHandle handle){
-		this.fullReleaseGrasp ( false);
-		Debug.Log ("Attempting pickup of-"+handle.name);
+		this.fullReleaseGrasp (false);
 		heldObj = null;
 		base.PickUpObjectHandle (handle);
 
@@ -93,6 +95,7 @@ public class Controller : Hand {
 
 	protected override void Start () {
 		base.Start ();
+		this.thisCollider = this.GetComponent<Collider> ();
 		this.menuLayermask = LayerMask.NameToLayer ("UI") | LayerMask.NameToLayer ("player");
 		trackedObject=this.GetComponent<SteamVR_TrackedObject>();
 		player = this.transform.root.GetComponent<playerRig>();
@@ -139,7 +142,7 @@ public class Controller : Hand {
 			if (triggerUp) {
 				//Always release touchHold objects when trigger is released no matter what.
 				releaseTouchHold();
-			} else {
+			} else if(triggerPress){
 				// otherwise run the positionClamp
 				heldObj.OnHandHold(this);
 			}

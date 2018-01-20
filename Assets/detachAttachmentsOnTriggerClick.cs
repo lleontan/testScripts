@@ -11,7 +11,10 @@ public class detachAttachmentsOnTriggerClick : HandleEvents {
 	public override void onTriggerPress (Controller controller){}
 	public override void onTriggerClickDown (Controller controller){
 		foreach (AttachmentSlot slot in slots) {
-			slot.AttemptDetach ();
+			Attachment attachment = slot.getAttachment ();
+			if(attachment){
+				attachment.GetComponent<Holdable> ().GetDefaultHandle().handleEvents.onTriggerClickDown(controller);
+			}
 		}
 	}
 	public override bool onGripUp(Controller controller){
@@ -19,6 +22,10 @@ public class detachAttachmentsOnTriggerClick : HandleEvents {
 	}
 	public override void touchPadPress (Controller controller, bool triggerUp,
 		bool triggerDown, bool triggerPress, bool gripUp, Vector2 touchpad){
-
+		if (controller.getTouchpadClickDown () && touchpad.y < -.2 && touchpad.x > -.4 && touchpad.x < .4) {
+			foreach (AttachmentSlot slot in slots) {
+				slot.AttemptDetach ();
+			}
+		}
 	}
 }

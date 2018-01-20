@@ -38,6 +38,7 @@ public class ObjectHandle : MonoBehaviour {
 	public string onHoldLayerName="handle";
 	private int onHoldLayerInt=0;
 	public HandleEvents handleEvents;
+	Attachment thisAttachment;
 
 	public string getDescription(){
 		return this.holdable.getDescription ();
@@ -85,6 +86,9 @@ public class ObjectHandle : MonoBehaviour {
 			this.holdTrans = this.transform;
 		}
 	}
+	void Start(){
+		this.thisAttachment=this.holdable.gameObject.GetComponent<Attachment>();
+	}
 	public Vector3 getPosition(){
 		return this.holdTrans.position;
 	}
@@ -94,17 +98,10 @@ public class ObjectHandle : MonoBehaviour {
 				this.handController.fullReleaseGrasp (false);
 			}
 			if(holdable.attemptAssignHandle (this,controller.handsOwner)) {
-			//Check if handRotation is in bounds and assign.
 			this.hand = handPos;
 			this.handController = controller;
-			//Physics.IgnoreCollision(this.GetComponent<Collider>(),
-			//	hand.GetComponent<Collider>(),true);
-
-			//Working
-			//holdable.assignLayer (LayerMask.NameToLayer ("ignorePlayer"));
-				//this.gameObject.layer = onHoldLayerInt;						//WARNING ONHOLDLAYER INT IS TOTALLY BROKEN AT THE MOMENT. DEFAULTS TO ZERO
-				this.gameObject.layer=0;
-				if (this.handleEvents) {
+			this.gameObject.layer=0;
+			if (this.handleEvents) {
 					this.handleEvents.onPickup (this.handController);
 				}
 			}
@@ -112,17 +109,23 @@ public class ObjectHandle : MonoBehaviour {
 		}
 		return false;
 	}
+	//!!!!!!!!!!!!!!!!!!!!!
 	public void HoldableReleaseHold(){
 		this.HoldableReleaseHold (handController!=null);
 	}
 	public void HoldableReleaseHold(bool wasHeld){
+		if (this.handController) {
+			handController.fullReleaseGrasp (true);
+		}
 		//ReleaseHold called by holdable.
-		if (this.handController != null) {
+		/*if (this.handController != null) {
 			this.handController.setCanAutoPickup (false);
 			this.handController.releaseGrasp ();
 		}
-		this.releaseHold (wasHeld);
+		this.releaseHold (wasHeld);*/
 	}
+	//!!!!!!!!!!!!!!!!!!!!!!!!
+
 	public void ControllerReleaseHold(bool canDepool){
 		//Release hold called by controller
 		//Physics.IgnoreCollision (
@@ -130,18 +133,14 @@ public class ObjectHandle : MonoBehaviour {
 		//Physics.IgnoreCollision(this.GetComponent<Collider>(),hand.GetComponent<Collider>(),false);
 
 		bool wasHeld=handController!=null;
-		if (wasHeld) {
-			//this.handController.setCanAutoPickup(false);
-			//this.handController.releaseGrasp ();
+		if(wasHeld){
 			this.holdable.objectHandleRelease (this, canDepool);
-		}
-		if(this.handController){
-			this.handController.releaseGrasp();
+			//this.handController.releaseGrasp();
 			this.hand = null;
 			this.handController = null;
 		}
 		//this.releaseHold ();
-		HoldableReleaseHold (wasHeld);				//To clear off the references on the old handle
+		//HoldableReleaseHold (wasHeld);				//To clear off the references on the old handle
 	}
 	private void releaseHold(bool wasHeld){
 		//Only does releaseing for this object. Do not call except from ControllerReleaseHold or HoldableReleaseHold
@@ -184,8 +183,7 @@ public class ObjectHandle : MonoBehaviour {
 	public bool checkAutoPickup(){
 		// Returns whether the referenced controller can autoPickup
 		// Can pick up if- no handcontroller,
-		Attachment thisAttachment=this.holdable.gameObject.GetComponent<Attachment>();
-		if(thisAttachment&&thisAttachment.isAttached()){
+		if((thisAttachment && thisAttachment.isAttached())||this.handController){
 			return false;
 		}
 		return this.autoPickup;

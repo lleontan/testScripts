@@ -35,6 +35,11 @@ public class Gun : MonoBehaviour {
 	public float fireDelay=.01f;
 	public float fireDelayCurrent=.11f;
 
+
+	private AudioSource audioSource;
+	public GameObject raycastLine;
+
+
 	private Quaternion zeroQuat=Quaternion.Euler(Vector3.zero);
 	public mag getMag(){
 		return this.magazine;
@@ -46,12 +51,12 @@ public class Gun : MonoBehaviour {
 	public void LoadMagazine(mag newMag){
 		if (!this.hasMag) {
 			this.magazine = newMag;
-			Debug.Log (this.name + ":nRounds:" + this.magazine.rounds);
+			//Debug.Log (this.name + ":nRounds:" + this.magazine.rounds);
 			this.hasMag = true;
 		}
 	}
 	public void releaseMagazine(){
-		Debug.Log ("Attempting MagRelease");
+		//Debug.Log ("Attempting MagRelease");
 		if (this.hasMag) {
 			this.magAcceptor.releaseMagazine ();
 			this.magazine = new mag (0);
@@ -60,6 +65,7 @@ public class Gun : MonoBehaviour {
 	}
 
 	void Start () {
+		this.audioSource = this.GetComponent<AudioSource> ();
 		this.fireDelayCurrent = 0f;
 		if (this.muzzleFlash == null && this.shootingPoint != null) {
 			this.muzzleFlash = this.shootingPoint.GetComponent<ParticleSystem> ();
@@ -94,7 +100,29 @@ public class Gun : MonoBehaviour {
 	}
 	public void Fire(){
 		//Fires gun,
-		Instantiate(bullet, shootingPoint.transform.position, shootingPoint.rotation);
+	//	Debug.Log (this.transform.rotation.eulerAngles);
+
+		Debug.Log (shootingPoint.transform.position+":::");
+		//Has inaccuracy bug
+		/*GameObject newBullet=Instantiate(bullet, shootingPoint.transform.position, this.transform.rotation);
+		Projectile projectile = newBullet.GetComponent<Projectile> ();
+		projectile.ownerRoot = this.transform.root;*/
+
+		audioSource.Play ();
+		GameObject newBulletLine=Instantiate(this.raycastLine, shootingPoint.transform.position, shootingPoint.transform.rotation);
+
+		/*Collider col=newBullet.GetComponent<Collider>();
+		if (col) {
+			Physics.IgnoreCollision (this.GetComponent<Collider> (), col);
+		} else {
+			col = newBullet.GetComponentInChildren<Collider> ();
+			if (col) {
+				Physics.IgnoreCollision (this.GetComponent<Collider> (), col);
+			}
+		}*/
+
+		//Debug.Log (this.gameObject.name+"-"+shootingPoint.localPosition);
+		//Physics.IgnoreCollision (newBullet.GetComponent<Collider>(),this.GetComponent<Collider>());
 		this.muzzleFlash.Play ();
 		this.chamberState = EMPTY_ROUND;
 		gunHandler.OnFire();
@@ -105,7 +133,7 @@ public class Gun : MonoBehaviour {
 		if (this.chamberState != CHAMBER_EMPTY) {
 			EjectRound ();
 		}
-		if(this.fireType>0 && this.hasMag && this.chamberRound()){
+		if(this.fireType>0 && this.hasMag && this.chamberMagazineRound()){
 			FillChamber ();
 		}
 	}
@@ -120,7 +148,7 @@ public class Gun : MonoBehaviour {
 		}
 		this.chamberState = CHAMBER_EMPTY;
 	}
-	public bool chamberRound(){
+	private bool chamberMagazineRound(){
 		//Attempts to chambera round;
 		//Returns true for successful chambering
 		return this.magazine.chamberRound();
@@ -159,6 +187,6 @@ public class Gun : MonoBehaviour {
 
 	public bool isRecoiling(){
 		//Returns true for is currently recoiling from a shot
-		return this.fireDelayCurrent>0;
+		return this.fireDelayCurrent > 0;
 	}
 }

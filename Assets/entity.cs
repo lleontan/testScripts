@@ -59,7 +59,9 @@ public class entity : MonoBehaviour {
 		//When damage is taken override to do an effect.
 		//Warning source may be null
 	}
-
+	public void TakeDamage(int damage){
+		this.TakeDamage (damage,this.transform.position+Vector3.up,"",null);
+	}
 	public void TakeDamage(int damage, entity source){
 		this.TakeDamage (damage, source,this.transform.position+Vector3.up);
 	}

@@ -25,6 +25,7 @@ public class AttachmentSlot : MonoBehaviour {
 	public string[] acceptAllExceptions;
 	private int[] acceptAllExceptionsInt;
 	public bool canAttachWhenHeld=true;
+	public bool applyRotation=false;
 	public bool getCanAttachWhileHeld(){
 		return this.canAttachWhenHeld;
 	}

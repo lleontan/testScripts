@@ -8,11 +8,24 @@ public class touchHold : OnControllerTouch {
 	// While trigger is held set transform to hand position.
 	// Use a slider for localPosition events and clamping.
 	// Release is handled by controller.
-
+	// Handler is touchHoldHandler
+	public bool resetPositionOnRelease = true;
+	public Transform touchedTransform;							//The transform that is actually moved. Defaults to this transform;
 	private Vector3 holdStartPosition= Vector3.zero;			//Worldspace vector3 of this object when first grabbed.
 	private Vector3 handHoldStartPosition= Vector3.zero;		//Worldspace vector3 of the hand when first grabbed.
 	public positionSlider slider;								//Optional PositionSlider for clamping
-	private Controller lastController;
+	public touchHoldHandler handler;
+	private Controller lastController;					//Currently held controller
+	void Awake(){
+		if (this.touchedTransform == null) {
+			this.touchedTransform = this.transform;
+		}
+		if (handler == null) {
+			handler = this.GetComponent<touchHoldHandler> ();
+		}
+	}
+
+
 	//Initial clickdown check, if true then assign controller, otherwise do nothing.
 	public bool CheckHeld(){
 		//Returns true for held, false for not held
@@ -23,21 +36,22 @@ public class touchHold : OnControllerTouch {
 	}
 
 	private void checkClickDown(Controller controller){
-		//Debug.Log ("checkClickDown");
-		if (this.lastController == null) {
-			//Debug.Log ("lastControllerNull");
-			if (controller.getTriggerClickDown ()&& !controller.isHeld()) {
+		if (this.lastController == null) {														
+			if (controller.getTriggerClickDown () && !controller.isHeld ()) {
+
+				Debug.Log ("TouchHoldStart");
 				//Checks to see if a initial click is made when in contact with a controller
-				Attachment attach=this.GetComponent<Attachment>();
+				Attachment attach = this.GetComponent<Attachment> ();
 				if (attach) {
 					attach.AttemptDetach ();
 				}
 				this.lastController = controller;
-				handHoldStartPosition = new Vector3(controller.transform.position.x,
-					controller.transform.position.y,controller.transform.position.z);
-				holdStartPosition = new Vector3(this.transform.position.x,this.transform.position.y,
-					this.transform.position.z);
+				handHoldStartPosition = controller.transform.position;
+				holdStartPosition = touchedTransform.position;
 				controller.grabTouchHoldObj (this);
+				if (handler) {
+					handler.onTouchHold ();
+				}
 			}
 		} else if (controller == lastController) {
 			// If we do have a controller holding this object then set its position
@@ -56,6 +70,7 @@ public class touchHold : OnControllerTouch {
 	}
 	public override void onTriggerStay (Controller controller){
 		//Checking initial clickDown.
+		Debug.Log("TriggerStayTouchHold");
 		checkClickDown (controller);
 	}
 	public override void onTriggerExit(Controller controller){}
@@ -74,14 +89,17 @@ public class touchHold : OnControllerTouch {
 	}
 	public void OnHandHold(Controller controller){
 		//The object is still being held by the controller
-		//Debug.Log(this.lastController.transform.position + "::"+this.holdStartPosition+"::"
-		//	+ this.handHoldStartPosition);
-		Vector3 newPos = controller.transform.position + this.holdStartPosition
+	
+
+		//Worldspace coordinates
+		/*Vector3 newPos = controller.transform.position + this.holdStartPosition
 			- this.handHoldStartPosition;
+		*/
+		Vector3 newPos = controller.transform.position;
 		if (slider != null) {
 			slider.clampPosition (newPos);
 		} else {
-			this.transform.position = newPos;
+			touchedTransform.position = newPos;
 		}
 		//Debug.Log ("OnHandHold"+this.lastController.name+ this.transform.localPosition);
 
@@ -98,8 +116,13 @@ public class touchHold : OnControllerTouch {
 		}
 	}
 	private void releaseGrasp(){
-		this.holdStartPosition = Vector3.zero;
-		this.handHoldStartPosition = Vector3.zero;
+		if (handler) {
+			handler.onRelease ();
+		}
+		if (resetPositionOnRelease) {
+			this.holdStartPosition = Vector3.zero;
+			this.handHoldStartPosition = Vector3.zero;
+		}
 		if (lastController != null) {
 			//laters
 		}

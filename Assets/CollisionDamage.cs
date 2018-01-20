@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
 public class CollisionDamage : MonoBehaviour {
 	//PAIRS WITH:OnCollisionDamageDealt handler
 
@@ -71,12 +70,12 @@ public class CollisionDamage : MonoBehaviour {
 	void OnCollisionEnter(Collision collision){
 		GameObject collidedObj = collision.gameObject;
 		entity target = collidedObj.GetComponent<entity> ();
-		foreach(int layer in this.ignoreDamageLayerInts){
-			if (collidedObj.layer == layer) {
-				return;
-			}
-		}
 		if (target) {
+			foreach(int layer in this.ignoreDamageLayerInts){
+				if (collidedObj.layer == layer) {
+					return;
+				}
+			}
 			if (allCollidersDamage) {
 				applyDamage (target, collision);
 			}
@@ -109,7 +108,7 @@ public class CollisionDamage : MonoBehaviour {
 		int calculatedDamage = calculateDamage (rigidVel);
 		if (limb) {
 			canHit = false;
-			limb.takeDamage (calculatedDamage,
+			limb.TakeDamage (calculatedDamage,
 				this, collision.contacts [0].point);
 		} else if (target) {
 			this.canHit = false;

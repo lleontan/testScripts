@@ -13,6 +13,7 @@ public class chamberRound : SliderEvent {
 	public touchHold touch;
 	public int checkAxisSwitchXYZ = 1;		//x is 1, y is 2, z is 3
 	public float positionSpeed=.6f;
+
 	public override void PositionUpdate (float x, float y, float z){
 		//Debug.Log ("Chamber "+y);
 		switch(checkAxisSwitchXYZ){
@@ -38,7 +39,7 @@ public class chamberRound : SliderEvent {
 		}
 	}
 	private void chamberPositionCheck(float n){
-		if (chamberMagnitude > n && canChamber&& !gun.isRecoiling()) {
+		if (chamberMagnitude > n && canChamber && touch.CheckHeld()&& !gun.isRecoiling()) {
 			gun.ChamberRound ();
 			canChamber = false;
 		}else if(!canChamber&& n>chamberReset){

@@ -15,7 +15,10 @@ public class limbHitbox : MonoBehaviour {
 			thisEnt = this.transform.root.GetComponent<entity> ();
 		}
 	}
-	public void takeDamage(int amount, CollisionDamage source, Vector3 point){
+	public void TakeDamage(int amount, CollisionDamage source, Vector3 point){
 		thisEnt.TakeDamage ((int)Mathf.Min(damageMultiplier*amount+minDamage,maxDamage),source, point);
+	}
+	public void TakeDamage(int amount){
+		thisEnt.TakeDamage ((int)Mathf.Min(damageMultiplier*amount+minDamage,maxDamage));
 	}
 }

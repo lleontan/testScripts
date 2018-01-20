@@ -45,7 +45,7 @@ public class Hand : MonoBehaviour {
 		return this.autopickup && canAutoPickup && !isHeld();
 	}
 	public virtual bool isHeld(){
-		//Returns true if this object is held
+		//Returns true if this hand is holding an object
 		return this.pickup != null || heldTransform != null;
 	}
 	public void setCanAutoPickup(bool setVal){
@@ -108,11 +108,19 @@ public class Hand : MonoBehaviour {
 		if (!this.isHeld()) {
 			ObjectHandle handle=col.GetComponent<ObjectHandle>();
 			if (handle && this.getCanAutoPickup () && handle.checkAutoPickup()) {
-				
 				this.PickUpObjectHandle (handle);
 			}
 		}
-
+	}
+	protected virtual void OnTriggerStay(Collider col){
+		//On TriggerEnter execute OnTriggerTouch handlers.
+		//Overload this method.
+		if (!this.isHeld()) {
+			ObjectHandle handle=col.GetComponent<ObjectHandle>();
+			if (handle && this.getCanAutoPickup () && handle.checkAutoPickup()) {
+				this.PickUpObjectHandle (handle);
+			}
+		}
 	}
 	protected virtual void Update(){
 		if (autopickup&&!canAutoPickup&&!isHeld()) {

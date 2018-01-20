@@ -21,6 +21,7 @@ public class Attachment : MonoBehaviour {
 	Vector3 lastPosition;
 	public OnAttach handler;
 	private Holdable thisHoldable;
+	public Vector3 rotateOnAttach=Vector3.zero;		
 	void Awake(){
 		//On awake initializes Holdable and OnAttach.
 		thisHoldable = this.GetComponent<Holdable> ();
@@ -63,16 +64,19 @@ public class Attachment : MonoBehaviour {
 		//Debug.Log ("AttemptAttach"+ slot!=null+":"+!isAttached()+":"+slot.CanAttach(this.slotID));
 		if (!isAttached() && canAttach<=0 && slot.CanAttach(this.slotID, this.slotType)) {
 			//If this attachment has encountered a AttachmentSlot and does not have a attachmentSlot and the slot has given the goAhead for attachment;
-			Attach(slot);
+			Attach(slot,slot.applyRotation);
 		}
 	}
-	private void Attach(AttachmentSlot slot){
+	private void Attach(AttachmentSlot slot, bool applyRotation){
 		this.canAttach = canAttachTimer;
-		Debug.Log ("AttachCheck::"+slot.name);
+		//Debug.Log ("AttachCheck::"+slot.name);
 		currentSlot = slot;
 		this.transform.parent = slot.GetAttachmentParentTransform ();
 		this.transform.position = slot.GetAttachmentParentTransform ().position;
 		this.transform.rotation = slot.GetAttachmentParentTransform ().rotation;
+		if (applyRotation) {
+			this.transform.rotation *= Quaternion.Euler (this.rotateOnAttach);
+		}
 		Rigidbody thisRigid = this.GetComponent<Rigidbody> ();
 		if (thisRigid) {
 			if (destroyRigidbodyOnEquip) {
@@ -100,7 +104,7 @@ public class Attachment : MonoBehaviour {
 		}
 	}
 	public void AttemptDetach(){
-		Debug.Log (isAttached()+"::"+canDetach());
+		//Debug.Log (isAttached()+"::"+canDetach());
 		//Debug.Log ("CurrentSlot:" + this.currentSlot ==null);//Returns true,
 		if(currentSlot){
 			Debug.Log ("Attempted Detach:"+this.currentSlot.gameObject.name);//Returns an error indicating null

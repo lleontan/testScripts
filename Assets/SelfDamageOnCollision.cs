@@ -12,6 +12,9 @@ public class SelfDamageOnCollision : OnCollisionDamageDealt {
 	{
 		if (thisEntity == null) {
 			thisEntity = this.gameObject.GetComponent<entity> ();
+			if (thisEntity == null) {
+				thisEntity = this.transform.GetComponentInParent<entity> ();
+			}
 		}
 	}
 	public override void onDamagingCollision(Collision col, int damageDealt, CollisionDamage damager){
